@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class  ConnectionViewController;
 @interface RDClientAppDelegate : NSObject <UIApplicationDelegate>
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property(nonatomic, retain) IBOutlet UIWindow *window;
+@property(nonatomic, retain) ConnectionViewController *connectionViewController;
 
 @end
