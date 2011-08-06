@@ -24,6 +24,8 @@
 		4C1E72E013C3855200258DA2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E72DB13C3855200258DA2 /* DDTTYLogger.m */; };
 		4C1E72E613C3862600258DA2 /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E72E513C3862600258DA2 /* AppUtils.m */; };
 		4C1E72EC13C38A1B00258DA2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C1E72EB13C38A1B00258DA2 /* CFNetwork.framework */; };
+		4C5F401113D32E01005E0936 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C5F400F13D32DF5005E0936 /* QuartzCore.framework */; };
+		4C5F401313D38452005E0936 /* cake.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F401213D38452005E0936 /* cake.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +61,9 @@
 		4C1E72E713C388FF00258DA2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		4C1E72E913C389FD00258DA2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		4C1E72EB13C38A1B00258DA2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		4C5F400D13D1F3D9005E0936 /* ProtocolConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolConstants.h; sourceTree = "<group>"; };
+		4C5F400F13D32DF5005E0936 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4C5F401213D38452005E0936 /* cake.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cake.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C5F401113D32E01005E0936 /* QuartzCore.framework in Frameworks */,
 				4C1E72EC13C38A1B00258DA2 /* CFNetwork.framework in Frameworks */,
 				4C1E72A213C37BD500258DA2 /* UIKit.framework in Frameworks */,
 				4C1E72A413C37BD500258DA2 /* Foundation.framework in Frameworks */,
@@ -79,13 +85,8 @@
 		4C1E729213C37BD500258DA2 = {
 			isa = PBXGroup;
 			children = (
-				4C1E72EB13C38A1B00258DA2 /* CFNetwork.framework */,
-				4C1E72E913C389FD00258DA2 /* MobileCoreServices.framework */,
-				4C1E72E713C388FF00258DA2 /* Security.framework */,
 				4C1E72A713C37BD500258DA2 /* RDClient */,
-				4C1E72E313C3857500258DA2 /* Vendor */,
-				4C1E72A013C37BD500258DA2 /* Frameworks */,
-				4C1E729E13C37BD500258DA2 /* Products */,
+				4C1E72A813C37BD500258DA2 /* Supporting Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,16 +96,22 @@
 				4C1E729D13C37BD500258DA2 /* RDClient.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		4C1E72A013C37BD500258DA2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C5F400F13D32DF5005E0936 /* QuartzCore.framework */,
+				4C1E72EB13C38A1B00258DA2 /* CFNetwork.framework */,
+				4C1E72E913C389FD00258DA2 /* MobileCoreServices.framework */,
+				4C1E72E713C388FF00258DA2 /* Security.framework */,
 				4C1E72A113C37BD500258DA2 /* UIKit.framework */,
 				4C1E72A313C37BD500258DA2 /* Foundation.framework */,
 				4C1E72A513C37BD500258DA2 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		4C1E72A713C37BD500258DA2 /* RDClient */ = {
@@ -118,7 +125,8 @@
 				4C1E72CA13C37E4D00258DA2 /* ConnectionViewController.m */,
 				4C1E72CC13C3834A00258DA2 /* ScreenView.h */,
 				4C1E72CD13C3834A00258DA2 /* ScreenView.m */,
-				4C1E72A813C37BD500258DA2 /* Supporting Files */,
+				4C5F400D13D1F3D9005E0936 /* ProtocolConstants.h */,
+				4C5F401213D38452005E0936 /* cake.png */,
 			);
 			path = RDClient;
 			sourceTree = "<group>";
@@ -126,6 +134,9 @@
 		4C1E72A813C37BD500258DA2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C1E72E313C3857500258DA2 /* Vendor */,
+				4C1E72A013C37BD500258DA2 /* Frameworks */,
+				4C1E729E13C37BD500258DA2 /* Products */,
 				4C1E72B713C37BD500258DA2 /* MainWindow.xib */,
 				4C1E72A913C37BD500258DA2 /* RDClient-Info.plist */,
 				4C1E72AA13C37BD500258DA2 /* InfoPlist.strings */,
@@ -133,6 +144,7 @@
 				4C1E72AF13C37BD500258DA2 /* RDClient-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			path = RDClient;
 			sourceTree = "<group>";
 		};
 		4C1E72E113C3855600258DA2 /* CocoaLumberjack */ = {
@@ -168,6 +180,7 @@
 				4C1E72E213C3856600258DA2 /* GCDAsyncSocket */,
 			);
 			name = Vendor;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -195,6 +208,9 @@
 /* Begin PBXProject section */
 		4C1E729413C37BD500258DA2 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 4C1E729713C37BD500258DA2 /* Build configuration list for PBXProject "RDClient" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -219,6 +235,7 @@
 			files = (
 				4C1E72AC13C37BD500258DA2 /* InfoPlist.strings in Resources */,
 				4C1E72B913C37BD500258DA2 /* MainWindow.xib in Resources */,
+				4C5F401313D38452005E0936 /* cake.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +370,7 @@
 				4C1E72C513C37BD500258DA2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

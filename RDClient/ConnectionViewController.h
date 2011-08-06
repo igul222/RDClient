@@ -14,10 +14,13 @@
     GCDAsyncSocket *socket;
     dispatch_queue_t dispatchQueue;
     NSTimeInterval lastMessage;
+    int remainingRects;
 }
 @property(nonatomic, retain) ScreenView *screenView;
 
 -(void)sendMessage:(NSString *)message;
 -(void)connectToServer:(NSString *)serverIP;
 -(void)sendNoop;
+-(void)rectRenderFinished;
+
 @end

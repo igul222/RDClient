@@ -14,15 +14,15 @@
 #pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.connectionViewController = [[ConnectionViewController alloc] init];
-    [connectionViewController connectToServer:@"192.168.1.50"];
+    self.connectionViewController = [[[ConnectionViewController alloc] init] autorelease];
+    [connectionViewController connectToServer:@"127.0.0.1"];
     
     [window addSubview:connectionViewController.view];
     [window makeKeyAndVisible];
     return YES;
 }
 
-- (void)dealloc {
+-(void)dealloc {
     self.connectionViewController = nil;
     self.window = nil;
     [super dealloc];

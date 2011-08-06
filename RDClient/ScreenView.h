@@ -7,7 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
-@interface ScreenView : UIView
+@interface ScreenView : UIView {
+    CGSize remoteResolution;
+    CGFloat scale;
+    CGFloat hOffset;
+    CGFloat vOffset;
+    
+    int updateCount;
+    NSMutableArray *unusedLayers;
+    CALayer *backgroundLayer;
+}
+
+// blitting updates
+-(void)setRemoteResolution:(CGSize)remote;
+-(void)updateRect:(CGRect)rect withImage:(CGImageRef)image callbackDelegate:(id)delegate;
+
+// compacting updates
+-(void)compactUpdates;
 
 @end

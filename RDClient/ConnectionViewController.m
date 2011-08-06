@@ -10,20 +10,17 @@
 #import "AppUtils.h"
 #import "ScreenView.h"
 #import "GCDAsyncSocket.h"
+#import "ProtocolConstants.h"
 
-#define PORT 51617
-
-#define EOF_STR @"@@@"
-#define EOF_DATA [EOF_STR dataUsingEncoding:NSUTF8StringEncoding]
 #define DEFAULT_TAG 0
+#define MESSAGE_CODE_TO_END_RANGE(l) (NSMakeRange(4, (l) - (4+[EOF_STR length])))
 
-#define NOOP_MSG @"NOOP"
-#define AUTHENTICATION_REQUEST_MSG @"AREQ"
-#define AUTHENTICATE_MSG @"AUTH"
-#define RESOLUTION_REQUEST_MSG @"RREQ"
-#define SET_RESOLUTION_MSG @"SRES"
-#define CURRENT_RESOLUTION_MSG @"RESN"
-#define SCREEN_MSG @"SCRN"
+static int dataToInt(NSData *data) {
+    NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    int result = [str intValue];
+    [str release];
+    return result;
+}
 
 @implementation ConnectionViewController
 @synthesize screenView;
@@ -34,7 +31,7 @@
     self = [super init];
     if(self) {
         screenView = [[ScreenView alloc] initWithFrame:CGRectZero];
-        dispatchQueue = dispatch_queue_create("com.lateralcommunications.gcdclient-connectionviewcontroller", NULL);
+        dispatchQueue = dispatch_queue_create("com.lateralcommunications.RDClient-ConnectionViewController", NULL);
     }
     return self;
 }
@@ -54,6 +51,7 @@
 
 -(void)viewDidLoad {
     screenView.frame = [self.view bounds];
+    screenView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:screenView];
     [super viewDidLoad];
 }
@@ -107,37 +105,56 @@
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     lastMessage = [[NSDate date] timeIntervalSince1970];
     
-    NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString *messageCode = [dataStr substringWithRange:NSMakeRange(0, 4)];
+    NSString *messageCode = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, 4)] encoding:NSUTF8StringEncoding];
     
     if([messageCode isEqualToString:AUTHENTICATION_REQUEST_MSG]) {
         NSString *msgStr = FORMAT(@"%@%@%@", AUTHENTICATE_MSG, PASSWORD, EOF_STR);
         [socket writeData:[msgStr dataUsingEncoding:NSUTF8StringEncoding] 
               withTimeout:TIMEOUT 
                       tag:DEFAULT_TAG];
-    } else if([messageCode isEqualToString:RESOLUTION_REQUEST_MSG]) {
-        int width, height;
-        if(IPAD) {
-            width = 1920;
-            height = 1200;
-        } else {
-            width = 1920;
-            height = 1200;
-        }
-        NSString *msgStr = FORMAT(@"%@%04d%04d%@", SET_RESOLUTION_MSG, width, height, EOF_STR);
-        [socket writeData:[msgStr dataUsingEncoding:NSUTF8StringEncoding] 
-              withTimeout:TIMEOUT 
-                      tag:DEFAULT_TAG];
+    
+    } else if([messageCode isEqualToString:SCREEN_MSG]) {
+        NSData *numberData = [data subdataWithRange:MESSAGE_CODE_TO_END_RANGE([data length])];
+        remainingRects = dataToInt(numberData);
+    
+    } else if([messageCode isEqualToString:CURRENT_RESOLUTION_MSG]) {
+    
+        NSData *wData = [data subdataWithRange:NSMakeRange(4, 4)];
+        NSData *hData = [data subdataWithRange:NSMakeRange(8, 4)];
+        int width = [[[[NSString alloc] initWithData:wData encoding:NSUTF8StringEncoding] autorelease] intValue];
+        int height = [[[[NSString alloc] initWithData:hData encoding:NSUTF8StringEncoding] autorelease] intValue];
+
+        [screenView setRemoteResolution:CGSizeMake((CGFloat)width, (CGFloat)height)];
+        
+    } else if([messageCode isEqualToString:SCREEN_RECT_MSG]) {
+        
+        NSData *xData = [data subdataWithRange:NSMakeRange(4, 4)];
+        NSData *yData = [data subdataWithRange:NSMakeRange(8, 4)];
+        int x = [[[[NSString alloc] initWithData:xData encoding:NSUTF8StringEncoding] autorelease] intValue];
+        int y = [[[[NSString alloc] initWithData:yData encoding:NSUTF8StringEncoding] autorelease] intValue];        
+        
+        CFDataRef imgData = (CFDataRef)[data subdataWithRange:NSMakeRange(12, [data length]-([EOF_DATA length]+12))];
+        CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData(imgData);
+        
+        CGImageRef image = CGImageCreateWithJPEGDataProvider(imgDataProvider, 
+                                                     NULL, 
+                                                     false, // shouldInterpolate 
+                                                     kCGRenderingIntentDefault);
+        CGRect rect = CGRectMake((CGFloat)x, (CGFloat)y, (CGFloat)CGImageGetWidth(image), (CGFloat)CGImageGetHeight(image));
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [screenView updateRect:rect withImage:image callbackDelegate:self];
+            CGImageRelease(image);
+        });
+    
+        CGDataProviderRelease(imgDataProvider);
     }
     
     [socket readDataToData:EOF_DATA withTimeout:TIMEOUT tag:DEFAULT_TAG];
+    [messageCode release];
 }
 
 #pragma mark - Handling timeouts
-
--(NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length {
-    return (10.0 + lastMessage - [[NSDate date] timeIntervalSince1970]);
-}
 
 -(NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutWriteWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length {
     return (10.0 + lastMessage - [[NSDate date] timeIntervalSince1970]);
@@ -161,6 +178,16 @@
             });
         }
     });
+}
+
+#pragma mark -
+
+
+-(void)rectRenderFinished {
+    remainingRects--;
+    if(remainingRects == 0) {
+        [self sendMessage:ALL_RECTS_RECEIVED_MSG];
+    }
 }
 
 @end

@@ -14,7 +14,7 @@
 #define PORT 51617
 #define PASSWORD @"hello"
 
-#define EOF_STR @"@@@"
+#define EOF_STR @"CAKESCAKESCAKESYUMMYCAKESCAKESCAKES"
 #define EOF_DATA [EOF_STR dataUsingEncoding:NSUTF8StringEncoding]
 
 #define NOOP_MSG @"NOOP"
