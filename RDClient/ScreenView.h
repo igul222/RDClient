@@ -18,6 +18,8 @@
     int updateCount;
     NSMutableArray *unusedLayers;
     CALayer *backgroundLayer;
+    
+    NSDictionary *actions;
 }
 
 // blitting updates

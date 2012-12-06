@@ -15,7 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.connectionViewController = [[[ConnectionViewController alloc] init] autorelease];
-    [connectionViewController connectToServer:@"127.0.0.1"];
+    [connectionViewController connectToServer:@"localhost"];
     
     [window addSubview:connectionViewController.view];
     [window makeKeyAndVisible];

@@ -26,16 +26,16 @@
         backgroundLayer.frame = self.bounds;
         [self.layer addSublayer:backgroundLayer];
         
-        NSMutableDictionary *actions = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+        actions = [[NSDictionary alloc] initWithObjectsAndKeys:
                                         [NSNull null], @"sublayers",
                                         [NSNull null], @"contents",
                                         [NSNull null], @"onOrderOut",
                                         [NSNull null], @"onOrderIn",
                                         [NSNull null], @"bounds",
                                         [NSNull null], @"position",
+                                        [NSNull null], @"opacity",
                                         nil];
         self.layer.actions = actions;
-        [actions release];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     }
@@ -45,6 +45,8 @@
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     [unusedLayers release];
+    [actions release];
+    
     [super dealloc];
 }
 
@@ -99,7 +101,7 @@
             [unusedLayers removeObjectAtIndex:0];
         } else {
             sublayer = [[CALayer alloc] init];
-            sublayer.delegate = self;
+            sublayer.actions = actions;
         }
         
         sublayer.frame = [self translateRemoteRectToLocalRect:rect];
@@ -115,14 +117,12 @@
     });    
 }
 
--(id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
-    return (id <CAAction>)[NSNull null];
-}
-
 #pragma mark - Compacting updates
 
 // this is to be run on the *main thread only*
 -(void)compactUpdates {
+    NSLog(@"compacting...");
+    
     UIGraphicsBeginImageContext(self.frame.size);
     [self.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
